@@ -176,7 +176,14 @@ CI/CD Integration
 
 Data Quality Checks
 
+
+ARCHITECTURE
+------------
+
+<img width="1844" height="1005" alt="image" src="https://github.com/user-attachments/assets/15a379bb-c495-49ab-acf3-e4a48a473270" />
+
+
 👨‍💻 Author
 
-Sathwik Kotyan
+Sathwik Kotian
 Data Engineering Enthusiast
