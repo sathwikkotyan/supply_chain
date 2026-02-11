@@ -30,7 +30,7 @@ Apache Kafka
 
 Apache Airflow
 
-Medallion Architecture (Bronze, Silver, Gold)
+ Databricks - Medallion Architecture (Bronze, Silver, Gold)
 
 Power BI
 
@@ -180,7 +180,8 @@ Data Quality Checks
 ARCHITECTURE
 ------------
 
-<img width="1844" height="1005" alt="image" src="https://github.com/user-attachments/assets/15a379bb-c495-49ab-acf3-e4a48a473270" />
+<img width="6000" height="3375" alt="Raw ingested order (1)" src="https://github.com/user-attachments/assets/9ff1d72d-02f8-4944-8fa8-d560cc3e0ac7" />
+
 
 
 👨‍💻 Author
