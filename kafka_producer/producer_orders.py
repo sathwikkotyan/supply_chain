@@ -3,18 +3,18 @@ import pandas as pd
 import json
 import time
 
-# 1️⃣ Connection details (your login & address)
+# 1️⃣ Connection details (login & address)
 conf = {
     'bootstrap.servers': 'pkc-921jm.us-east-2.aws.confluent.cloud:9092',  # Post office address
     'security.protocol': 'SASL_SSL',                 # Secure connection
     'sasl.mechanisms': 'PLAIN',                      # Simple login
-    'sasl.username': 'GBJML63ME2TILJTK',               # Your username
-    'sasl.password': 'cfltMfled8GKafzq94uLlab+3+eg+3SjZLAx06TTr0EKuT9HTk3lRpEw7keZVPxQ'             # Your password
+    'sasl.username': 'GBJML63ME2TILJTK',               #  username
+    'sasl.password': 'cfltMfled8GKafzq94uLlab+3+eg+3SjZLAx06TTr0EKuT9HTk3lRpEw7keZVPxQ'             
 }
 
 producer = Producer(conf)
 
-# 2️⃣ Read your orders data (the letters)
+# 2️⃣ Read  orders data (the letters)
 orders = pd.read_csv("../data_generation/orders.csv")
 
 # 3️⃣ Function to check if each message is delivered
