@@ -1,180 +1,133 @@
-🚀 Smart Supply Chain Analytics Platform
-📌 Project Overview
+# Real-Time Supply Chain Streaming Analytics
 
-This project is an end-to-end Data Engineering pipeline built to simulate a real-world Supply Chain Analytics system. It processes streaming order data, applies Medallion Architecture (Bronze → Silver → Gold), orchestrates workflows using Airflow, and visualizes KPIs using Power BI.
+An end-to-end data engineering pipeline that simulates a real-world supply chain system — processing live order events through Kafka, applying Medallion Architecture on Databricks, orchestrating with Airflow, and surfacing KPIs in Power BI.
 
-The goal is to demonstrate practical experience with modern data engineering tools and real-world pipeline design.
+---
 
-🏗️ Architecture
-Data Generation (CSV)
-        ↓
-Kafka Producer
-        ↓
-Kafka Topic (Streaming Orders)
-        ↓
-Kafka Consumer → Bronze Layer (Raw Data)
-        ↓
-Silver Layer (Cleaned & Transformed Data)
-        ↓
-Gold Layer (Aggregated Business Metrics)
-        ↓
-Airflow (Pipeline Orchestration)
-        ↓
-Power BI (Business Dashboard)
+## What this project does
 
-🛠️ Tech Stack
+Raw supply chain orders are generated and streamed through **Apache Kafka** at ~20 events/sec. A consumer picks them up and pushes data through three structured layers — Bronze (raw), Silver (cleaned), Gold (aggregated business metrics) — all orchestrated by **Apache Airflow** and stored on **Databricks Delta Lake**.
 
-Python
+Final output: a **Power BI dashboard** showing revenue by product, orders by warehouse, and fulfilment status in near real-time.
 
-Apache Kafka
+---
 
-Apache Airflow
+## Architecture
 
- Databricks - Medallion Architecture (Bronze, Silver, Gold)
+```
+CSV Data Generator
+      ↓
+Kafka Producer → Kafka Topic (5,000+ order events)
+      ↓
+Kafka Consumer → Bronze Layer (raw ingestion)
+      ↓
+         Silver Layer (cleaning, null handling, standardization)
+      ↓
+         Gold Layer (revenue aggregations, KPIs)
+      ↓
+Airflow DAGs (orchestration + scheduling + retry logic)
+      ↓
+Power BI Dashboard (business reporting)
+```
 
-Power BI
+---
 
-Git & GitHub
+## Tech Stack
 
-Ubuntu (Linux environment)
+| Layer | Tool |
+|---|---|
+| Streaming | Apache Kafka |
+| Processing | Python, PySpark |
+| Storage | Databricks Delta Lake |
+| Orchestration | Apache Airflow |
+| Visualization | Power BI |
+| Environment | Ubuntu Linux |
 
-📂 Project Structure
+---
+
+## Medallion Architecture
+
+**Bronze** — Raw Kafka consumer output. Unprocessed, stored as single source of truth.
+
+**Silver** — Cleaned dataset. Null values handled, formats standardized, schema enforced.
+
+**Gold** — Business-ready aggregations: Revenue by Product, Revenue by Warehouse, Orders by Status, Total Units Sold.
+
+---
+
+## Airflow Orchestration
+
+Four DAGs manage the pipeline:
+
+- `bronze_dag.py` — ingests from Kafka consumer output
+- `silver_dag.py` — runs cleaning transformations
+- `gold_dag.py` — runs aggregations
+- `master_pipeline_dag.py` — chains all three with dependency management, retry logic, and daily scheduling
+
+---
+
+## Project Structure
+
+```
 SUPPLY_CHAIN_PROJECT/
-│
-├── Data_generation/
-├── kafka_producer/
-├── kafka_consumer/
+├── Data_generation/       # synthetic order event generator
+├── kafka_producer/        # publishes events to Kafka topic
+├── kafka_consumer/        # consumes and writes to Bronze
 ├── airflow_dags/
 │   ├── bronze_dag.py
 │   ├── silver_dag.py
 │   ├── gold_dag.py
 │   └── master_pipeline_dag.py
-│
-├── data/
-│   ├── bronze/
-│   ├── silver/
-│   └── gold/
-│
-└── README.md
+└── data/
+    ├── bronze/
+    ├── silver/
+    └── gold/
+```
 
-🔄 Pipeline Explanation
-🥉 Bronze Layer
+---
 
-Ingests raw Kafka order data
+## How to Run
 
-Stores unprocessed data
+```bash
+# 1. Activate virtual environment
+python -m venv venv && source venv/bin/activate
 
-Acts as single source of truth
+# 2. Start Kafka (Zookeeper + Broker)
+bin/zookeeper-server-start.sh config/zookeeper.properties
+bin/kafka-server-start.sh config/server.properties
 
-🥈 Silver Layer
+# 3. Run producer and consumer
+python kafka_producer/producer.py
+python kafka_consumer/consumer.py
 
-Cleans data
-
-Handles null values
-
-Standardizes formats
-
-Prepares structured dataset
-
-🥇 Gold Layer
-
-Creates business-ready aggregations
-
-Revenue by Product
-
-Revenue by Warehouse
-
-Orders by Status
-
-🎯 Airflow Orchestration
-
-Airflow is used to:
-
-Automate execution of Bronze → Silver → Gold
-
-Maintain task dependency
-
-Retry on failure
-
-Monitor pipeline health
-
-Schedule daily execution
-
-Without Airflow:
-
-Manual script execution required
-
-No automation
-
-No monitoring
-
-No retry logic
-
-📊 Power BI Dashboard
-
-Built dashboards showing:
-
-Revenue by Product
-
-Revenue by Warehouse
-
-Order Status Distribution
-
-Total Units Sold
-
-KPI Cards for Revenue & Orders
-
-🧠 Key Challenges & Learnings
-
-Kafka offset handling issues
-
-Authentication failures
-
-Airflow environment conflicts
-
-Python version compatibility
-
-Folder structure confusion in Linux
-
-Resolved using:
-
-Proper environment isolation (venv)
-
-Correct DAG folder configuration
-
-Clear architecture separation
-
-Step-by-step debugging
-
-🚀 How to Run
-
-Activate virtual environment
-
-Start Kafka
-
-Run producer & consumer
-
-Start Airflow:
-
+# 4. Start Airflow
 airflow webserver -p 8080
 airflow scheduler
 
+# 5. Trigger master DAG from Airflow UI
+# 6. Connect Power BI to Gold layer output
+```
 
-Trigger Master DAG
+---
 
-Connect Power BI to Gold layer
+## Key Challenges Solved
 
-🔮 Future Enhancements
+- Kafka offset handling and consumer group management
+- Airflow DAG folder configuration and environment isolation
+- Python version compatibility across pipeline components
+- Structured debugging approach using virtual environments and clear layer separation
 
-Add FastAPI for external client access
+---
 
-Deploy on Cloud (Azure / AWS)
+## Future Enhancements
 
-Use Docker for full containerization
+- Deploy on Azure / AWS
+- Dockerize the full pipeline
+- Add data quality checks (Great Expectations)
+- CI/CD integration
+- FastAPI layer for external data access
 
-CI/CD Integration
-
-Data Quality Checks
+---
 
 
 ARCHITECTURE
@@ -182,9 +135,13 @@ ARCHITECTURE
 
 <img width="6000" height="3375" alt="Raw ingested order (1)" src="https://github.com/user-attachments/assets/9ff1d72d-02f8-4944-8fa8-d560cc3e0ac7" />
 
+## Author
+
+**Sathwik Kotian** — [LinkedIn](https://www.linkedin.com/in/sathwik-kotian-bb6791265/) · [GitHub](https://github.com/sathwikkotyan)
 
 
-👨‍💻 Author
 
-Sathwik Kotian
-Data Engineering Enthusiast
+
+
+
+
